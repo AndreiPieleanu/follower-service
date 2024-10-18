@@ -1,5 +1,6 @@
 package s6.followerservice.rabbitmq;
 
+import org.apache.kafka.common.internals.Topic;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -10,6 +11,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
+
+    // Follow-related configuration
+    @Bean
+    public TopicExchange followExchange(){ return new TopicExchange("follow-exchange"); }
+
+    @Bean
+    public Queue followCreateQueue(){ return new Queue("follow-queue"); }
+
+    @Bean
+    public Binding bindingCreateFollow(Queue followCreateQueue, TopicExchange followExchange){
+        return BindingBuilder.bind(followCreateQueue).to(followExchange).with("follow.created");
+    }
 
     // User-related configuration
     @Bean
